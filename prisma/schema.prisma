@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ServiceCategory {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  iconName    String
+  visible     Boolean @default(true)
+  plans       Plan[]
+}
+
+model Plan {
+  id           String          @id @default(cuid())
+  name         String
+  service      ServiceCategory @relation(fields: [serviceId], references: [id])
+  serviceId    String
+  priceINR     Float
+  priceBDT     Float
+  priceUSD     Float
+  features     String[]
+  badge        String?
+  active       Boolean         @default(true)
+  isPopular    Boolean         @default(false)
+  isFree       Boolean         @default(false)
+  freeSettings Json?           // Storing free plan specific settings as JSON
+}
+
+model GlobalSettings {
+  id    String @id @default("default")
+  data  Json   // Storing all other settings in a single JSON object for flexibility
+}
